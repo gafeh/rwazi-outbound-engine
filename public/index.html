@@ -1,0 +1,416 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Outbound Engine</title>
+<style>
+:root {
+  --bg:#f1f3f7; --panel:#fff; --ink:#0f172a; --muted:#64748b; --faint:#94a3b8;
+  --line:#e8ecf2; --accent:#3b6ef5; --track:#eef1f6; --shadow:0 1px 2px rgba(15,23,42,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0b0d12; --panel:#13161d; --ink:#e8eaf0; --muted:#8b93a7; --faint:#5d6579;
+    --line:#1f242e; --track:#1b2029; --shadow:none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0b0d12; --panel:#13161d; --ink:#e8eaf0; --muted:#8b93a7; --faint:#5d6579;
+  --line:#1f242e; --track:#1b2029; --shadow:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:14px/1.5 -apple-system,"Segoe UI",Inter,system-ui,sans-serif}
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+
+aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;
+  display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:15px;
+  padding:0 8px 22px}
+.mark{width:26px;height:26px;border-radius:8px;
+  background:linear-gradient(135deg,#3b6ef5,#06b6d4)}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+  color:var(--muted);text-decoration:none;font-size:13.5px;margin-bottom:2px}
+.nav:hover{background:var(--track);color:var(--ink)}
+.nav.on{background:var(--track);color:var(--accent);font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
+.side-foot{margin-top:auto;background:linear-gradient(145deg,#1e293b,#0f172a);
+  border-radius:12px;padding:16px;color:#cbd5e1}
+.side-foot b{color:#fff;display:block;margin-bottom:4px;font-size:13px}
+.side-foot span{font-size:11.5px;line-height:1.45;display:block;color:#94a3b8}
+
+main{padding:24px 28px 40px;max-width:1500px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+h1{font-size:21px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:7px 12px;font-size:12.5px;color:var(--muted)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:14px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;box-shadow:var(--shadow)}
+.kpi-label{font-size:12.5px;color:var(--muted)}
+.kpi-row{display:flex;align-items:baseline;gap:9px;margin:7px 0 3px}
+.kpi-value{font-size:28px;font-weight:650;letter-spacing:-.02em}
+.pill{font-size:11px;font-weight:600;padding:2.5px 7px;border-radius:20px}
+.pill.up{background:rgba(16,185,129,.12);color:#059669}
+.pill.down{background:rgba(239,68,68,.12);color:#dc2626}
+.kpi-sub{font-size:11.5px;color:var(--faint)}
+
+.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+@media (max-width:1050px){.shell{grid-template-columns:1fr} aside{display:none}
+  .grid,.grid3{grid-template-columns:1fr} main{padding:20px 16px 32px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;box-shadow:var(--shadow)}
+.card h2{font-size:13.5px;margin:0 0 2px;font-weight:600}
+.card .cap{font-size:11.5px;color:var(--faint);margin-bottom:16px}
+.empty{color:var(--faint);font-size:12.5px;padding:14px 0}
+
+.frow{display:grid;grid-template-columns:104px 1fr 44px;align-items:center;
+  gap:12px;margin-bottom:9px}
+.fname{font-size:12.5px;color:var(--muted)}
+.ftrack{background:var(--track);border-radius:6px;height:10px;overflow:hidden}
+.fbar{height:100%;border-radius:6px}
+.fval{font-size:12.5px;font-weight:600;text-align:right}
+
+.donut{width:160px;height:160px;display:block;margin:0 auto}
+.d-val{text-anchor:middle;font-size:26px;font-weight:650;fill:var(--ink)}
+.d-cap{text-anchor:middle;font-size:10px;fill:var(--faint);
+  text-transform:uppercase;letter-spacing:.08em}
+
+.cols{display:flex;align-items:flex-end;gap:16px;height:150px;padding-top:10px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;height:100%}
+.colnum{font-size:12px;font-weight:600;margin-bottom:5px}
+.colbar{width:100%;border-radius:7px 7px 3px 3px;min-height:5px}
+.collab{font-size:11px;color:var(--faint);margin-top:8px}
+
+.mrow{display:grid;grid-template-columns:1fr 70px 26px;align-items:center;
+  gap:10px;margin-bottom:9px}
+.mname{font-size:12.5px;color:var(--muted);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.mtrack{background:var(--track);height:7px;border-radius:5px;overflow:hidden}
+.mbar{height:100%;background:var(--accent);border-radius:5px}
+.mval{font-size:12px;font-weight:600;text-align:right}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;color:var(--faint);font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;padding:0 10px 10px}
+td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
+  vertical-align:top}
+.co{display:flex;align-items:center;gap:10px}
+.av{width:30px;height:30px;border-radius:8px;background:var(--track);
+  display:grid;place-items:center;font-weight:650;font-size:12px;color:var(--muted);
+  flex:none}
+.co-name{font-weight:600}
+.co-sub{font-size:11px;color:var(--faint)}
+.score{font-weight:650;padding:3px 9px;border-radius:7px;font-size:12px}
+.score.hot{background:rgba(16,185,129,.13);color:#059669}
+.score.warm{background:rgba(59,110,245,.12);color:#3b6ef5}
+.score.cool{background:var(--track);color:var(--muted)}
+.sig{color:var(--muted);max-width:230px}
+.angle{color:var(--faint);max-width:330px;font-size:12px}
+
+.fail{border-left:2px solid #ef4444;padding:2px 0 2px 11px;margin-bottom:13px}
+.fail.fixed{border-left-color:#10b981}
+.fail-co{font-weight:600;font-size:12.5px}
+.fail-note{font-size:11.5px;color:var(--muted);margin-top:2px}
+.rev{font-size:10px;font-weight:600;padding:1.5px 6px;border-radius:20px;
+  margin-left:7px}
+.rev.ok{background:rgba(16,185,129,.13);color:#059669}
+.rev.bad{background:rgba(239,68,68,.12);color:#dc2626}
+
+.foot{font-size:11px;color:var(--faint);margin-top:18px;line-height:1.6}
+</style></head><body>
+<div class="shell">
+  <aside>
+    <div class="brand"><div class="mark"></div>Outbound Engine</div>
+    <a class="nav on" href="#"><span class="dot"></span>Overview</a><a class="nav" href="#"><span class="dot"></span>Pipeline</a><a class="nav" href="#"><span class="dot"></span>Leads</a><a class="nav" href="#"><span class="dot"></span>QA gate</a><a class="nav" href="#"><span class="dot"></span>Sources</a><a class="nav" href="#"><span class="dot"></span>Settings</a>
+    <div class="side-foot">
+      <b>Built for Rwazi</b>
+      <span>Signal-based sourcing to QA-gated outreach, synced to HubSpot.
+      Runs unattended on a schedule.</span>
+    </div>
+  </aside>
+  <main>
+    <header>
+      <div>
+        <h1>Pipeline overview</h1>
+        <div class="sub">Expansion-signal sourcing across 5 emerging markets</div>
+      </div>
+      <div class="chip">Live from local pipeline database</div>
+    </header>
+
+    <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-label">Postings sourced</span></div>
+      <div class="kpi-row">
+        <span class="kpi-value">1,432</span>
+        <span class="pill up">&#9650; 73% free reject</span>
+      </div>
+      <div class="kpi-sub">0 still queued</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-label">Qualified signals</span></div>
+      <div class="kpi-row">
+        <span class="kpi-value">92</span>
+        <span class="pill up">&#9650; 24% keep rate</span>
+      </div>
+      <div class="kpi-sub">of 382 seen by the model</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-label">Drafts QA passed</span></div>
+      <div class="kpi-row">
+        <span class="kpi-value">6</span>
+        <span class="pill up">&#9650; 100% pass</span>
+      </div>
+      <div class="kpi-sub">6 rejected first, 6 repaired</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><span class="kpi-label">Hours saved</span></div>
+      <div class="kpi-row">
+        <span class="kpi-value">1.1</span>
+        <span class="pill up">&#9650; modeled</span>
+      </div>
+      <div class="kpi-sub">1.2h manual vs 0.1h review, on 6 reviewable leads</div>
+    </div></div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Funnel</h2>
+        <div class="cap">Where volume is removed, and at what cost</div>
+        
+        <div class="frow">
+          <div class="fname">Sourced</div>
+          <div class="ftrack"><div class="fbar" style="width:100.0%;
+               background:#3b6ef5"></div></div>
+          <div class="fval">1432</div>
+        </div>
+        <div class="frow">
+          <div class="fname">Rejected free</div>
+          <div class="ftrack"><div class="fbar" style="width:73.32402234636871%;
+               background:#94a3b8"></div></div>
+          <div class="fval">1050</div>
+        </div>
+        <div class="frow">
+          <div class="fname">Model triaged</div>
+          <div class="ftrack"><div class="fbar" style="width:26.675977653631282%;
+               background:#64748b"></div></div>
+          <div class="fval">382</div>
+        </div>
+        <div class="frow">
+          <div class="fname">Qualified</div>
+          <div class="ftrack"><div class="fbar" style="width:6.424581005586592%;
+               background:#10b981"></div></div>
+          <div class="fval">92</div>
+        </div>
+        <div class="frow">
+          <div class="fname">Scored</div>
+          <div class="ftrack"><div class="fbar" style="width:2.793296089385475%;
+               background:#f59e0b"></div></div>
+          <div class="fval">40</div>
+        </div>
+        <div class="frow">
+          <div class="fname">Drafted</div>
+          <div class="ftrack"><div class="fbar" style="width:1.2%;
+               background:#8b5cf6"></div></div>
+          <div class="fval">6</div>
+        </div>
+        <div class="frow">
+          <div class="fname">QA passed</div>
+          <div class="ftrack"><div class="fbar" style="width:1.2%;
+               background:#06b6d4"></div></div>
+          <div class="fval">6</div>
+        </div>
+        <div class="frow">
+          <div class="fname">In CRM</div>
+          <div class="ftrack"><div class="fbar" style="width:1.2%;
+               background:#ec4899"></div></div>
+          <div class="fval">6</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>QA gate</h2>
+        <div class="cap">Blind second pass before anything is sendable</div>
+        
+    <svg viewBox="0 0 140 140" class="donut">
+      <circle cx="70" cy="70" r="54" fill="none" stroke="var(--track)"
+              stroke-width="14"/>
+      <circle cx="70" cy="70" r="54" fill="none" stroke="#10b981"
+              stroke-width="14" stroke-linecap="round"
+              stroke-dasharray="339.3 0.0"
+              transform="rotate(-90 70 70)"/>
+      <text x="70" y="66" class="d-val">100%</text>
+      <text x="70" y="86" class="d-cap">after 6 revised</text>
+    </svg>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <h2>Score distribution</h2>
+        <div class="cap">Weighted 4-factor rubric, 0 to 100</div>
+        <div class="cols">
+        <div class="col">
+          <div class="colnum">3</div>
+          <div class="colbar" style="height:15.789473684210526%;
+               background:#10b981"></div>
+          <div class="collab">70+</div>
+        </div>
+        <div class="col">
+          <div class="colnum">4</div>
+          <div class="colbar" style="height:21.052631578947366%;
+               background:#3b6ef5"></div>
+          <div class="collab">55-69</div>
+        </div>
+        <div class="col">
+          <div class="colnum">19</div>
+          <div class="colbar" style="height:100.0%;
+               background:#f59e0b"></div>
+          <div class="collab">40-54</div>
+        </div>
+        <div class="col">
+          <div class="colnum">14</div>
+          <div class="colbar" style="height:73.68421052631578%;
+               background:#cbd5e1"></div>
+          <div class="collab">Under 40</div>
+        </div></div>
+      </div>
+      <div class="card">
+        <h2>Markets</h2>
+        <div class="cap">Scored leads by target market</div>
+        
+      <div class="mrow">
+        <span class="mname">South Africa</span>
+        <div class="mtrack"><div class="mbar" style="width:100%"></div></div>
+        <span class="mval">33</span>
+      </div>
+      <div class="mrow">
+        <span class="mname">Africa</span>
+        <div class="mtrack"><div class="mbar" style="width:12%"></div></div>
+        <span class="mval">4</span>
+      </div>
+      <div class="mrow">
+        <span class="mname">Uganda</span>
+        <div class="mtrack"><div class="mbar" style="width:3%"></div></div>
+        <span class="mval">1</span>
+      </div>
+      <div class="mrow">
+        <span class="mname">Tanzania</span>
+        <div class="mtrack"><div class="mbar" style="width:3%"></div></div>
+        <span class="mval">1</span>
+      </div>
+      <div class="mrow">
+        <span class="mname">Southern & Eastern Africa</span>
+        <div class="mtrack"><div class="mbar" style="width:3%"></div></div>
+        <span class="mval">1</span>
+      </div>
+      </div>
+      <div class="card">
+        <h2>Rejected by QA</h2>
+        <div class="cap">6 drafts blocked before reaching a human</div>
+        
+      <div class="fail fixed">
+        <div class="fail-co">Visa<span class="rev ok">fixed on revision</span></div>
+        <div class="fail-note">It reads like templated vendor outreach, with a generic 'Hi there' greeting, a product pitch for Rwazi, and a soft 'reply and I will send a note' CTA,</div>
+      </div>
+      <div class="fail fixed">
+        <div class="fail-co">Pernod Ricard<span class="rev ok">fixed on revision</span></div>
+        <div class="fail-note">It reads as a templated vendor pitch: a generic 'Hi there' opener, a filler line about what 'hires like that tend to' do, and a brochure-style product</div>
+      </div>
+      <div class="fail fixed">
+        <div class="fail-co">Pernod Ricard España SA<span class="rev ok">fixed on revision</span></div>
+        <div class="fail-note">The 'Hi there' greeting, the generic 'Hires like this often need...' line and the product-description sentence read like a templated vendor pitch, wit</div>
+      </div>
+      <div class="fail fixed">
+        <div class="fail-co">Pernod Ricard España SA<span class="rev ok">fixed on revision</span></div>
+        <div class="fail-note">The generic 'Hi there' opener, the asserted need ('usually means you need') and the product-description line read like templated vendor outreach rathe</div>
+      </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Top scored leads</h2>
+      <div class="cap">Ranked by rubric score, with the generated outreach angle</div>
+      <table>
+        <tr><th>Company</th><th>Score</th><th>Signal</th><th>Angle</th></tr>
+        
+        <tr>
+          <td><div class="co"><span class="av">P</span>
+              <div><div class="co-name">Pernod Ricard</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score hot">72</span></td>
+          <td class="sig">Africa Route-to-Market Growth Lead</td>
+          <td class="angle">Pernod Ricard's push to improve distributor coverage and reporting quality across Africa n</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">P</span>
+              <div><div class="co-name">Pernod Ricard</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score hot">70</span></td>
+          <td class="sig">Business Development Manager</td>
+          <td class="angle">As Pernod Ricard builds out distributor coverage across Africa, Rwazi can give the Johanne</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">P</span>
+              <div><div class="co-name">Pernod Ricard España SA</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score hot">70</span></td>
+          <td class="sig">Africa Route-to-Market & Distributor Growth Lead</td>
+          <td class="angle">Pernod Ricard's push to expand distributor universe coverage across Africa needs outlet-le</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">P</span>
+              <div><div class="co-name">Pernod Ricard España SA</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score hot">65</span></td>
+          <td class="sig">Business Development Manager</td>
+          <td class="angle">As Pernod Ricard builds out distributor coverage across Africa, Rwazi can supply zero-part</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">P</span>
+              <div><div class="co-name">Pernod Ricard</div>
+              <div class="co-sub">South Africa</div></div></div></td>
+          <td><span class="score warm">64</span></td>
+          <td class="sig">Business Development Manager</td>
+          <td class="angle">Pernod Ricard's push to strengthen distributor performance and route-to-market across Afri</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">V</span>
+              <div><div class="co-name">Visa</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score warm">63</span></td>
+          <td class="sig">SVP, Group Country Manager, Southern & Eastern Africa (SEA)</td>
+          <td class="angle">Congratulate the incoming SEA country head and offer zero-party consumer data on cash-vs-d</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">L</span>
+              <div><div class="co-name">Lenovo</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score warm">55</span></td>
+          <td class="sig">Motorola Country Sales Manager, South Africa</td>
+          <td class="angle">Congratulate Motorola's new South Africa sales lead on the build-out and offer fast zero-p</td>
+        </tr>
+        <tr>
+          <td><div class="co"><span class="av">W</span>
+              <div><div class="co-name">Wise</div>
+              <div class="co-sub">Johannesburg, Gauteng</div></div></div></td>
+          <td><span class="score warm">54</span></td>
+          <td class="sig">Country Manager</td>
+          <td class="angle">Congratulate Wise on its South Africa expansion and offer zero-party data on how South Afr</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="foot">
+      Keep rate counts only postings a model judged; the 1,050
+      rejected by deterministic rules never reached one.
+      Hours saved applies a modeled 12 min/lead manual baseline to the
+      6 leads that reached a reviewable state, against measured
+      review time. The manual baseline is modeled, not observed.
+      Contact enrichment is a paid dependency; without it the engine produces
+      company-level leads rather than inventing an email address.
+    </div>
+  </main>
+</div>
+</body></html>

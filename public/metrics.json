@@ -1,0 +1,158 @@
+{
+  "sourced": 1432,
+  "prefiltered": 1050,
+  "noise": 1340,
+  "signals": 92,
+  "pending": 0,
+  "scored": 40,
+  "contacts": 0,
+  "drafted": 6,
+  "revised": 6,
+  "qa_pass": 6,
+  "qa_fail": 0,
+  "synced": 6,
+  "blocked_ever": 6,
+  "model_triaged": 382,
+  "qa_pass_rate": 100,
+  "keep_rate": 24,
+  "free_reject_rate": 73,
+  "distribution": [
+    {
+      "band": "70+",
+      "n": 3
+    },
+    {
+      "band": "55-69",
+      "n": 4
+    },
+    {
+      "band": "40-54",
+      "n": 19
+    },
+    {
+      "band": "Under 40",
+      "n": 14
+    }
+  ],
+  "top": [
+    {
+      "company": "Pernod Ricard",
+      "total": 72,
+      "breakdown_json": "{\"market_fit\": 8, \"buying_trigger\": 6, \"budget_proxy\": 9, \"access\": 6, \"angle\": \"Pernod Ricard's push to improve distributor coverage and reporting quality across Africa needs ground-truth consumer and outlet data in markets where Nielsen and Kantar don't reach, which Rwazi can supply.\"}",
+      "title": "Africa Route-to-Market Growth Lead",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "Africa"
+    },
+    {
+      "company": "Pernod Ricard",
+      "total": 70,
+      "breakdown_json": "{\"market_fit\": 8, \"buying_trigger\": 6, \"budget_proxy\": 9, \"access\": 5, \"angle\": \"As Pernod Ricard builds out distributor coverage across Africa, Rwazi can give the Johannesburg team zero-party consumer and outlet-level data in markets where Nielsen and Kantar have no reliable reach, so distributor targets rest on real demand rather than guesswork.\"}",
+      "title": "Business Development Manager",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "Africa"
+    },
+    {
+      "company": "Pernod Ricard Espa\u00f1a SA",
+      "total": 70,
+      "breakdown_json": "{\"market_fit\": 8, \"buying_trigger\": 6, \"budget_proxy\": 9, \"access\": 5, \"angle\": \"Pernod Ricard's push to expand distributor universe coverage across Africa needs outlet-level and shopper data that legacy panels can't deliver, and Rwazi can provide it quickly across fragmented markets.\"}",
+      "title": "Africa Route-to-Market & Distributor Growth Lead",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "Africa"
+    },
+    {
+      "company": "Pernod Ricard Espa\u00f1a SA",
+      "total": 65,
+      "breakdown_json": "{\"market_fit\": 8, \"buying_trigger\": 5, \"budget_proxy\": 9, \"access\": 4, \"angle\": \"As Pernod Ricard builds out distributor coverage across Africa, Rwazi can supply zero-party consumer and shopper data from markets where legacy panels are thin, to guide route-to-market and trade investment decisions.\"}",
+      "title": "Business Development Manager",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "South Africa"
+    },
+    {
+      "company": "Pernod Ricard",
+      "total": 64,
+      "breakdown_json": "{\"market_fit\": 7, \"buying_trigger\": 5, \"budget_proxy\": 9, \"access\": 5, \"angle\": \"Pernod Ricard's push to strengthen distributor performance and route-to-market across Africa needs outlet-level and shopper data in markets where Nielsen and Kantar have little reach, which Rwazi can supply via zero-party consumer data.\"}",
+      "title": "Business Development Manager",
+      "location": "South Africa",
+      "triage_market": "Africa"
+    },
+    {
+      "company": "Visa",
+      "total": 63,
+      "breakdown_json": "{\"market_fit\": 8, \"buying_trigger\": 5, \"budget_proxy\": 8, \"access\": 4, \"angle\": \"Congratulate the incoming SEA country head and offer zero-party consumer data on cash-vs-digital payment behaviour and merchant acceptance in Kenya, Tanzania and Uganda, where transaction data alone cannot show the unbanked and informal-economy picture.\"}",
+      "title": "SVP, Group Country Manager, Southern & Eastern Africa (SEA)",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "Southern & Eastern Africa"
+    },
+    {
+      "company": "Lenovo",
+      "total": 55,
+      "breakdown_json": "{\"market_fit\": 6, \"buying_trigger\": 5, \"budget_proxy\": 8, \"access\": 3, \"angle\": \"Congratulate Motorola's new South Africa sales lead on the build-out and offer fast zero-party data on smartphone purchase drivers and brand perception in Johannesburg and beyond, where legacy panels offer little coverage of mid-tier and informal channel buyers.\"}",
+      "title": "Motorola Country Sales Manager, South Africa",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "South Africa"
+    },
+    {
+      "company": "Wise",
+      "total": 54,
+      "breakdown_json": "{\"market_fit\": 6, \"buying_trigger\": 6, \"budget_proxy\": 6, \"access\": 3, \"angle\": \"Congratulate Wise on its South Africa expansion and offer zero-party data on how South African consumers and migrant workers actually send, receive and save money, to support the new Country Manager's first-year market strategy.\"}",
+      "title": "Country Manager",
+      "location": "Johannesburg, Gauteng",
+      "triage_market": "South Africa"
+    }
+  ],
+  "markets": [
+    {
+      "m": "South Africa",
+      "n": 33
+    },
+    {
+      "m": "Africa",
+      "n": 4
+    },
+    {
+      "m": "Uganda",
+      "n": 1
+    },
+    {
+      "m": "Tanzania",
+      "n": 1
+    },
+    {
+      "m": "Southern & Eastern Africa",
+      "n": 1
+    }
+  ],
+  "fails": [
+    {
+      "notes": "It reads like templated vendor outreach, with a generic 'Hi there' greeting, a product pitch for Rwazi, and a soft 'reply and I will send a note' CTA, rather than a credible peer-to-peer operator note. FIX: Remove the unsupported Kenya, Tanzania and Uganda framing and the Consumer Insights assumption, address a named recipient, and rewrite around only what the posting establishes, in a more peer-like voice.",
+      "checked_at": "2026-10-20 13:29:17",
+      "company": "Visa",
+      "step": 2,
+      "status": "approved"
+    },
+    {
+      "notes": "It reads as a templated vendor pitch: a generic 'Hi there' opener, a filler line about what 'hires like that tend to' do, and a brochure-style product description with no peer-level insight. FIX: Replace the generic 'Hi there' and the 'hires like that tend to raise questions' filler with one specific observation tied to the posting's stated focus (distributor capability and trade investment efficiency), and cut the product description to one plain sentence in an operator's voice.",
+      "checked_at": "2026-10-20 13:29:14",
+      "company": "Pernod Ricard",
+      "step": 2,
+      "status": "approved"
+    },
+    {
+      "notes": "The 'Hi there' greeting, the generic 'Hires like this often need...' line and the product-description sentence read like a templated vendor pitch, with nothing peer-level drawn from the posting. FIX: Replace the generic opener and product blurb with one specific observation from the posting (for example its focus on distributor capability and route-to-market across Africa, not just South Africa), and use a named greeting so it reads as operator-to-operator.",
+      "checked_at": "2026-10-20 13:29:06",
+      "company": "Pernod Ricard Espa\u00f1a SA",
+      "step": 2,
+      "status": "approved"
+    },
+    {
+      "notes": "The generic 'Hi there' opener, the asserted need ('usually means you need') and the product-description line read like templated vendor outreach rather than a peer-to-peer note. FIX: Remove the inferred need and the 'legacy panels are thin' assertion. Restate only what the posting says (distributor programmes, data quality and reporting, route-to-market across African markets) and ask a specific question tied to that, with a named greeting.",
+      "checked_at": "2026-10-20 13:28:47",
+      "company": "Pernod Ricard Espa\u00f1a SA",
+      "step": 2,
+      "status": "approved"
+    }
+  ],
+  "hours_manual": 1.2,
+  "hours_engine": 0.1,
+  "hours_saved": 1.1
+}
