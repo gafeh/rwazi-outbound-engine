@@ -1,0 +1,4 @@
+# seeds/ats_candidates.yaml
+# Only add a token after confirming the careers page redirects to
+# job-boards.greenhouse.io/<token> or jobs.lever.co/<token>.
+[]
