@@ -17,18 +17,20 @@
   --line:#1f242e; --track:#1b2029; --shadow:none;
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:14px/1.5 -apple-system,"Segoe UI",Inter,system-ui,sans-serif}
 .shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
 
 aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;
-  display:flex;flex-direction:column}
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
 .brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:15px;
   padding:0 8px 22px}
 .mark{width:26px;height:26px;border-radius:8px;
   background:linear-gradient(135deg,#3b6ef5,#06b6d4)}
 .nav{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
-  color:var(--muted);text-decoration:none;font-size:13.5px;margin-bottom:2px}
+  color:var(--muted);text-decoration:none;font-size:13.5px;margin-bottom:2px;
+  cursor:pointer;transition:background .12s,color .12s}
 .nav:hover{background:var(--track);color:var(--ink)}
 .nav.on{background:var(--track);color:var(--accent);font-weight:600}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
@@ -62,6 +64,7 @@ h1{font-size:21px;margin:0;letter-spacing:-.01em}
   .grid,.grid3{grid-template-columns:1fr} main{padding:20px 16px 32px}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:18px 20px;box-shadow:var(--shadow)}
+.card,header{scroll-margin-top:20px}
 .card h2{font-size:13.5px;margin:0 0 2px;font-weight:600}
 .card .cap{font-size:11.5px;color:var(--faint);margin-bottom:16px}
 .empty{color:var(--faint);font-size:12.5px;padding:14px 0}
@@ -125,7 +128,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
 <div class="shell">
   <aside>
     <div class="brand"><div class="mark"></div>Outbound Engine</div>
-    <a class="nav on" href="#"><span class="dot"></span>Overview</a><a class="nav" href="#"><span class="dot"></span>Pipeline</a><a class="nav" href="#"><span class="dot"></span>Leads</a><a class="nav" href="#"><span class="dot"></span>QA gate</a><a class="nav" href="#"><span class="dot"></span>Sources</a><a class="nav" href="#"><span class="dot"></span>Settings</a>
+    <a class="nav" href="#top"><span class="dot"></span>Overview</a><a class="nav" href="#funnel"><span class="dot"></span>Funnel</a><a class="nav" href="#qa"><span class="dot"></span>QA gate</a><a class="nav" href="#rejected"><span class="dot"></span>Rejections</a><a class="nav" href="#scores"><span class="dot"></span>Scores</a><a class="nav" href="#markets"><span class="dot"></span>Markets</a><a class="nav" href="#leads"><span class="dot"></span>Leads</a>
     <div class="side-foot">
       <b>Built for Rwazi</b>
       <span>Signal-based sourcing to QA-gated outreach, synced to HubSpot.
@@ -133,12 +136,12 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
   </aside>
   <main>
-    <header>
+    <header id="top">
       <div>
         <h1>Pipeline overview</h1>
         <div class="sub">Expansion-signal sourcing across 5 emerging markets</div>
       </div>
-      <div class="chip">Live from local pipeline database</div>
+      <div class="chip">Last run 02 Nov 2026, 16:12 UTC</div>
     </header>
 
     <div class="kpis">
@@ -176,7 +179,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div></div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card" id="funnel">
         <h2>Funnel</h2>
         <div class="cap">Where volume is removed, and at what cost</div>
         
@@ -229,7 +232,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
           <div class="fval">6</div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" id="qa">
         <h2>QA gate</h2>
         <div class="cap">Blind second pass before anything is sendable</div>
         
@@ -247,7 +250,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
 
     <div class="grid3">
-      <div class="card">
+      <div class="card" id="scores">
         <h2>Score distribution</h2>
         <div class="cap">Weighted 4-factor rubric, 0 to 100</div>
         <div class="cols">
@@ -276,7 +279,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
           <div class="collab">Under 40</div>
         </div></div>
       </div>
-      <div class="card">
+      <div class="card" id="markets">
         <h2>Markets</h2>
         <div class="cap">Scored leads by target market</div>
         
@@ -306,7 +309,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
         <span class="mval">1</span>
       </div>
       </div>
-      <div class="card">
+      <div class="card" id="rejected">
         <h2>Rejected by QA</h2>
         <div class="cap">6 drafts blocked before reaching a human</div>
         
@@ -329,7 +332,7 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="leads">
       <h2>Top scored leads</h2>
       <div class="cap">Ranked by rubric score, with the generated outreach angle</div>
       <table>
@@ -413,4 +416,21 @@ td{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
   </main>
 </div>
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav'));
+  var targets = links.map(function (a) {
+    return document.querySelector(a.getAttribute('href'));
+  });
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var i = targets.indexOf(e.target);
+      links.forEach(function (a, j) { a.classList.toggle('on', i === j); });
+    });
+  }, { rootMargin: '-10% 0px -70% 0px' });
+  targets.forEach(function (t) { if (t) io.observe(t); });
+})();
+</script>
 </body></html>

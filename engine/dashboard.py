@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
@@ -104,8 +106,10 @@ def api_metrics():
 
 # --- rendering ------------------------------------------------------------
 
-NAV = [("Overview", True), ("Pipeline", False), ("Leads", False),
-       ("QA gate", False), ("Sources", False), ("Settings", False)]
+# (label, anchor id). Every entry must match an id in the rendered HTML.
+NAV = [("Overview", "top"), ("Funnel", "funnel"), ("QA gate", "qa"),
+       ("Rejections", "rejected"), ("Scores", "scores"),
+       ("Markets", "markets"), ("Leads", "leads")]
 
 
 def _kpi(label, value, tag, tag_good, sub):
@@ -225,8 +229,8 @@ def _fail_rows(fails):
     out = []
     for f in fails:
         fixed = f["status"] in ("qa_passed", "approved")
-        badge = (f'<span class="rev ok">fixed on revision</span>' if fixed
-                 else f'<span class="rev bad">still blocked</span>')
+        badge = ('<span class="rev ok">fixed on revision</span>' if fixed
+                 else '<span class="rev bad">still blocked</span>')
         out.append(f"""
       <div class="fail{' fixed' if fixed else ''}">
         <div class="fail-co">{f['company']}{badge}</div>
@@ -238,10 +242,11 @@ def _fail_rows(fails):
 @app.get("/", response_class=HTMLResponse)
 def index():
     m = metrics()
+    stamp = datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M UTC")
 
     nav = "".join(
-        f'<a class="nav{" on" if active else ""}" href="#">'
-        f'<span class="dot"></span>{label}</a>' for label, active in NAV)
+        f'<a class="nav" href="#{anchor}"><span class="dot"></span>{label}</a>'
+        for label, anchor in NAV)
 
     kpis = "".join([
         _kpi("Postings sourced", f'{m["sourced"]:,}',
@@ -276,18 +281,20 @@ def index():
   --line:#1f242e; --track:#1b2029; --shadow:none;
 }}
 *{{box-sizing:border-box}}
+html{{scroll-behavior:smooth}}
 body{{margin:0;background:var(--bg);color:var(--ink);
   font:14px/1.5 -apple-system,"Segoe UI",Inter,system-ui,sans-serif}}
 .shell{{display:grid;grid-template-columns:232px 1fr;min-height:100vh}}
 
 aside{{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;
-  display:flex;flex-direction:column}}
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh}}
 .brand{{display:flex;align-items:center;gap:10px;font-weight:650;font-size:15px;
   padding:0 8px 22px}}
 .mark{{width:26px;height:26px;border-radius:8px;
   background:linear-gradient(135deg,#3b6ef5,#06b6d4)}}
 .nav{{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
-  color:var(--muted);text-decoration:none;font-size:13.5px;margin-bottom:2px}}
+  color:var(--muted);text-decoration:none;font-size:13.5px;margin-bottom:2px;
+  cursor:pointer;transition:background .12s,color .12s}}
 .nav:hover{{background:var(--track);color:var(--ink)}}
 .nav.on{{background:var(--track);color:var(--accent);font-weight:600}}
 .dot{{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}}
@@ -321,6 +328,7 @@ h1{{font-size:21px;margin:0;letter-spacing:-.01em}}
   .grid,.grid3{{grid-template-columns:1fr}} main{{padding:20px 16px 32px}}}}
 .card{{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:18px 20px;box-shadow:var(--shadow)}}
+.card,header{{scroll-margin-top:20px}}
 .card h2{{font-size:13.5px;margin:0 0 2px;font-weight:600}}
 .card .cap{{font-size:11.5px;color:var(--faint);margin-bottom:16px}}
 .empty{{color:var(--faint);font-size:12.5px;padding:14px 0}}
@@ -392,23 +400,23 @@ td{{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
   </aside>
   <main>
-    <header>
+    <header id="top">
       <div>
         <h1>Pipeline overview</h1>
         <div class="sub">Expansion-signal sourcing across 5 emerging markets</div>
       </div>
-      <div class="chip">Live from local pipeline database</div>
+      <div class="chip">Last run {stamp}</div>
     </header>
 
     <div class="kpis">{kpis}</div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card" id="funnel">
         <h2>Funnel</h2>
         <div class="cap">Where volume is removed, and at what cost</div>
         {_funnel_rows(m)}
       </div>
-      <div class="card">
+      <div class="card" id="qa">
         <h2>QA gate</h2>
         <div class="cap">Blind second pass before anything is sendable</div>
         {_donut(m["qa_pass_rate"], m["revised"])}
@@ -416,24 +424,24 @@ td{{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
 
     <div class="grid3">
-      <div class="card">
+      <div class="card" id="scores">
         <h2>Score distribution</h2>
         <div class="cap">Weighted 4-factor rubric, 0 to 100</div>
         {_dist_bars(m["distribution"])}
       </div>
-      <div class="card">
+      <div class="card" id="markets">
         <h2>Markets</h2>
         <div class="cap">Scored leads by target market</div>
         {_market_rows(m["markets"])}
       </div>
-      <div class="card">
+      <div class="card" id="rejected">
         <h2>Rejected by QA</h2>
         <div class="cap">{m["blocked_ever"]} drafts blocked before reaching a human</div>
         {_fail_rows(m["fails"])}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="leads">
       <h2>Top scored leads</h2>
       <div class="cap">Ranked by rubric score, with the generated outreach angle</div>
       <table>
@@ -453,4 +461,21 @@ td{{padding:11px 10px;border-top:1px solid var(--line);font-size:12.5px;
     </div>
   </main>
 </div>
+<script>
+(function () {{
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav'));
+  var targets = links.map(function (a) {{
+    return document.querySelector(a.getAttribute('href'));
+  }});
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {{
+    entries.forEach(function (e) {{
+      if (!e.isIntersecting) return;
+      var i = targets.indexOf(e.target);
+      links.forEach(function (a, j) {{ a.classList.toggle('on', i === j); }});
+    }});
+  }}, {{ rootMargin: '-10% 0px -70% 0px' }});
+  targets.forEach(function (t) {{ if (t) io.observe(t); }});
+}})();
+</script>
 </body></html>"""
